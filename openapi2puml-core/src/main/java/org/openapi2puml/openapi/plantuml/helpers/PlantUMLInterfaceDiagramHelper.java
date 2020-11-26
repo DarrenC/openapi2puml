@@ -46,7 +46,7 @@ public class PlantUMLInterfaceDiagramHelper {
       }
     }
 
-    return new ArrayList(interfaceDiagramMap.values());
+    return new ArrayList<InterfaceDiagram>(interfaceDiagramMap.values());
   }
 
   private InterfaceDiagram mergeInterfaceDiagrams(InterfaceDiagram existingInterface, InterfaceDiagram newInterface) {

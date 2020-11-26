@@ -43,9 +43,15 @@ public class PlantUMLClassHelper {
 
       String superClass = getSuperClass(modelObject);
       List<ClassMembers> classMembers = getClassMembers(modelObject, modelsMap);
+      List<ClassRelation> classRelations = getChildClasses(classMembers, superClass);
 
-      classDiagrams.add(new ClassDiagram(className, modelObject.getDescription(), classMembers,
-          getChildClasses(classMembers, superClass), isModelClass(modelObject), superClass));
+      classDiagrams.add(
+        new ClassDiagram(className, 
+                          modelObject.getDescription(), 
+                          classMembers,
+                          classRelations,
+                          isModelClass(modelObject), 
+                          superClass));
     }
 
     return classDiagrams;
@@ -117,17 +123,17 @@ public class PlantUMLClassHelper {
     List<ClassMembers> classMembers = new ArrayList<>();
 
     if (modelObject instanceof ModelImpl) {
-      classMembers = getClassMembers((ModelImpl) modelObject, modelsMap);
+      classMembers = getClassMembersForModelImpl((ModelImpl) modelObject, modelsMap);
     } else if (modelObject instanceof ComposedModel) {
-      classMembers = getClassMembers((ComposedModel) modelObject, modelsMap);
+      classMembers = getClassMembersForComposedModel((ComposedModel) modelObject, modelsMap);
     } else if (modelObject instanceof ArrayModel) {
-      classMembers = getClassMembers((ArrayModel) modelObject, modelsMap);
+      classMembers = getClassMembersForArrayModel((ArrayModel) modelObject, modelsMap);
     }
 
     return classMembers;
   }
 
-  private List<ClassMembers> getClassMembers(ArrayModel arrayModel, Map<String, Model> modelsMap) {
+  private List<ClassMembers> getClassMembersForArrayModel(ArrayModel arrayModel, Map<String, Model> modelsMap) {
 
     List<ClassMembers> classMembers = new ArrayList<>();
 
@@ -140,7 +146,7 @@ public class PlantUMLClassHelper {
     return classMembers;
   }
 
-  private List<ClassMembers> getClassMembers(ComposedModel composedModel, Map<String, Model> modelsMap) {
+  private List<ClassMembers> getClassMembersForComposedModel(ComposedModel composedModel, Map<String, Model> modelsMap) {
     return getClassMembers(composedModel, modelsMap, new HashSet<>());
   }
 
@@ -198,7 +204,7 @@ public class PlantUMLClassHelper {
     return classMembers;
   }
 
-  private List<ClassMembers> getClassMembers(ModelImpl model, Map<String, Model> modelsMap) {
+  private List<ClassMembers> getClassMembersForModelImpl(ModelImpl model, Map<String, Model> modelsMap) {
     List<ClassMembers> classMembers = new ArrayList<>();
 
     Map<String, Property> modelMembers = model.getProperties();
