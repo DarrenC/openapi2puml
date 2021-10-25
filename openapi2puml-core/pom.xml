@@ -22,9 +22,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.swagger</groupId>
+			<groupId>io.swagger.parser.v3</groupId>
 			<artifactId>swagger-parser</artifactId>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>io.swagger</groupId>-->
+<!--			<artifactId>swagger-parser</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>com.github.spullara.mustache.java</groupId>
 			<artifactId>compiler</artifactId>
