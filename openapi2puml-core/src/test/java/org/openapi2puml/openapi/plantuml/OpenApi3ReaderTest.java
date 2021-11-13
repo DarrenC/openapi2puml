@@ -18,13 +18,12 @@ public class OpenApi3ReaderTest {
     private OpenApi3Reader openApi3Reader = new OpenApi3Reader();
 
     @Test
-    @DisplayName("Basic Petstore test")
+    @DisplayName("Basic Petstore test OpenAPI3")
     @Tag("integration-test")
-    void test_generatePetStorePlantUml() {
+    void test_generatePetStorePlantUml() throws Exception {
         String specFile = "src/test/resources/openapi3/petstore/petstore_3.0.yaml";
 
-        openApi3Reader.transformOpenApi2Puml(specFile);
-        //generator.transformOpenApi2Puml(specFile, outputPath, generateDefinitionModelOnly, includeCardinality, generateSvg, false);
+        String pathToOutputFile = openApi3Reader.transformOpenApi2Puml(specFile);
 
         assertTrue(specFile != null);
     }
