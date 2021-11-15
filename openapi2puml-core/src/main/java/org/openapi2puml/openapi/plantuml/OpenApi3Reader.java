@@ -19,6 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * @deprecated - use the org.openapi2puml.openapi.OpenApi3Reader
+ */
+@Deprecated
 public class OpenApi3Reader {
   private static final Logger LOGGER = LogManager.getLogger(OpenApi3Reader.class);
 
@@ -28,10 +32,6 @@ public class OpenApi3Reader {
   public static final String CLASS_DIAGRAMS = "classDiagrams";
   public static final String INTERFACE_DIAGRAMS = "interfaceDiagrams";
   public static final String ENTITY_RELATIONS = "entityRelations";
-
-  public OpenApi3Reader() {
-    super();
-  }
 
   public String transformOpenApi2Puml(String specFile) throws Exception {
     File swaggerSpecFile = new File(specFile);
