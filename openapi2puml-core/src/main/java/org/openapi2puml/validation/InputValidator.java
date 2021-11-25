@@ -10,14 +10,16 @@ public class InputValidator {
   public static boolean validateInputs(TransactionContext context) {
 
     // Check OpenApi specification file exists
-    boolean valid = Files.exists(Paths.get(context.getSpecFile()));
-    // TODO - check if it's a file
+    boolean valid = Files.isRegularFile(Paths.get(context.getSpecFile()));
+
     // TODO - check if the file has a valid OpenApi version entry
 
-    // TODO - check output file path
+    // TODO - check output file path exists
 
     // TODO - return a list of failed validation checks
 
     return valid;
   }
+
+
 }

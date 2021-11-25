@@ -8,7 +8,6 @@ public class TransactionContext {
   private boolean includeCardinality;
   private boolean generateSvg;
   private boolean generatePng;
-
   private String title;
   private String openApiVersion;
   private String specificationVersion;
@@ -95,5 +94,29 @@ public class TransactionContext {
 
   public void setGeneratePng(boolean generatePng) {
     this.generatePng = generatePng;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getOpenApiVersion() {
+    return openApiVersion;
+  }
+
+  public void setOpenApiVersion(String openApiVersion) {
+    this.openApiVersion = openApiVersion;
+  }
+
+  public String getSpecificationVersion() {
+    return specificationVersion;
+  }
+
+  public void setSpecificationVersion(String specificationVersion) {
+    this.specificationVersion = specificationVersion;
   }
 }
