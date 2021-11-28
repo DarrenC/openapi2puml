@@ -6,7 +6,9 @@ import org.apache.logging.log4j.Logger;
 import org.openapi2puml.model.TransactionContext;
 import org.openapi2puml.openapi.OpenApi3Reader;
 import org.openapi2puml.openapi.plantuml.MustacheUtility;
+import org.openapi2puml.openapi.plantuml.vo.BasicInfo;
 import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
+import org.openapi2puml.openapi.v3.OpenApi3ToBasicInfoModelHelper;
 import org.openapi2puml.openapi.v3.OpenApi3ToClassModelHelper;
 import org.openapi2puml.validation.InputValidator;
 
@@ -37,7 +39,7 @@ public class OpenApi2PlantUmlProcessor {
 
   // TODO - this to become the main entry point
   public void process(TransactionContext context) {
-    // TODO - Validate inputs - file existence etc.
+
     if (InputValidator.validateInputs(context)) {
       try {
         // TODO - read the OpenAPI spec + return an OpenAPI/Swagger object
@@ -45,18 +47,18 @@ public class OpenApi2PlantUmlProcessor {
         final OpenAPI openAPI = openApi3Reader.readOpenApiSpecification(context.getSpecFile());
 
         // TODO - Call the Model Builders - Basic Info, Class, Interface, Relationship
+        BasicInfo basicInfoFromOpenApi = OpenApi3ToBasicInfoModelHelper.getBasicInfoFromOpenApi(openAPI);
         List<ClassDiagram> classesFromOpenApi = OpenApi3ToClassModelHelper.getClassesFromOpenApi(openAPI);
 
         // TODO - Call the Context builder to add the model into the mustache template context map
         Map<String, Object> mustacheContextObject = new TreeMap<>();
 
-        final String TITLE = "title";
-        final String VERSION = "version";
+        final String BASIC_INFO = "basicInfo";
         final String CLASS_DIAGRAMS = "classDiagrams";
         final String INTERFACE_DIAGRAMS = "interfaceDiagrams";
         final String ENTITY_RELATIONS = "entityRelations";
 
-        mustacheContextObject.put(TITLE, "FAKE TITLE");
+        mustacheContextObject.put(BASIC_INFO, basicInfoFromOpenApi);
         mustacheContextObject.put(CLASS_DIAGRAMS, classesFromOpenApi);
 
         // TODO - Call the mustache template handler to build the PlantUML diagram
@@ -69,6 +71,8 @@ public class OpenApi2PlantUmlProcessor {
         // TODO - handle all types of exceptions with proper information ....
         LOGGER.error("ABORTING - Failed to complete transaction. ", e);
       }
+    } else {
+      LOGGER.error("ABORTING - Input validation failed.");
     }
 
   }

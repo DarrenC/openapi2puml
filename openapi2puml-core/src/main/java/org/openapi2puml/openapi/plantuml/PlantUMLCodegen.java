@@ -1,8 +1,10 @@
 package org.openapi2puml.openapi.plantuml;
 
+import org.openapi2puml.openapi.plantuml.helpers.PlantUMLBasicInfoHelper;
 import org.openapi2puml.openapi.plantuml.helpers.PlantUMLClassHelper;
 import org.openapi2puml.openapi.plantuml.helpers.PlantUMLInterfaceDiagramHelper;
 import org.openapi2puml.openapi.plantuml.helpers.PlantUMLRelationHelper;
+import org.openapi2puml.openapi.plantuml.vo.BasicInfo;
 import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
 import org.openapi2puml.openapi.plantuml.vo.InterfaceDiagram;
 import io.swagger.models.Swagger;
@@ -18,6 +20,7 @@ public class PlantUMLCodegen {
 
   public static final String TITLE = "title";
   public static final String VERSION = "version";
+  public static final String BASIC_INFO = "basicInfo";
   public static final String CLASS_DIAGRAMS = "classDiagrams";
   public static final String INTERFACE_DIAGRAMS = "interfaceDiagrams";
   public static final String ENTITY_RELATIONS = "entityRelations";
@@ -46,22 +49,24 @@ public class PlantUMLCodegen {
     Map<String, Object> plantUmlObjectModelMap = convertSwaggerToPlantUmlObjectModelMap(swagger);
 
     MustacheUtility mustacheUtility = new MustacheUtility();
-    String plantUmlFilePath = mustacheUtility.createPlantUmlFile(targetLocation, plantUmlObjectModelMap);
 
-    return plantUmlFilePath;
+    return mustacheUtility.createPlantUmlFile(targetLocation, plantUmlObjectModelMap);
   }
 
   public Map<String, Object> convertSwaggerToPlantUmlObjectModelMap(Swagger swagger) {
     Map<String, Object> additionalProperties = new TreeMap<>();
 
-    additionalProperties.put(TITLE, swagger.getInfo().getTitle());
-    additionalProperties.put(VERSION, swagger.getInfo().getVersion());
+    // Info about title, version, openAPI version
+    PlantUMLBasicInfoHelper  plantUMLBasicInfoHelper = new PlantUMLBasicInfoHelper();
+    BasicInfo basicInfo = plantUMLBasicInfoHelper.processSwaggerBasicInfo(swagger);
+    additionalProperties.put(BASIC_INFO, basicInfo);
 
-    // First refactoring point - use PlantUMLClassHelper
+    // Class Diagrams from the Schema Models
     PlantUMLClassHelper plantUMLClassHelper = new PlantUMLClassHelper(this.includeCardinality);
     List<ClassDiagram> classDiagrams = plantUMLClassHelper.processSwaggerModels(swagger);
     additionalProperties.put(CLASS_DIAGRAMS, classDiagrams);
 
+    // Interface Diagrams from the paths & perations
     List<InterfaceDiagram> interfaceDiagrams = new ArrayList<>();
 
     if (!generateDefinitionModelOnly) {
@@ -70,6 +75,7 @@ public class PlantUMLCodegen {
       additionalProperties.put(INTERFACE_DIAGRAMS, interfaceDiagrams);
     }
 
+    // Relations from the links from path/operation to schema models
     PlantUMLRelationHelper plantUMLRelationHelper = new PlantUMLRelationHelper();
     // TODO - Test class for this part
     additionalProperties.put(ENTITY_RELATIONS, plantUMLRelationHelper.getRelations(classDiagrams, interfaceDiagrams));

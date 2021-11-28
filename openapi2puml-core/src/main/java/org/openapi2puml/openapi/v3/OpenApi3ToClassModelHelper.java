@@ -1,14 +1,9 @@
 package org.openapi2puml.openapi.v3;
 
-import io.swagger.models.Swagger;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.Schema;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openapi2puml.openapi.plantuml.OpenApi3Reader;
 import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
-import org.openapi2puml.openapi.plantuml.vo.ClassMembers;
-import org.openapi2puml.openapi.plantuml.vo.ClassRelation;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -30,7 +30,7 @@ public class OpenApi3Reader {
     if (openAPI == null) {
       // TODO - create a proper exception for this case
       LOGGER.error("ABORTING - Failed to read OpenApi file: " + specificationFilePath);
-      throw new Exception("No OpenAPI yet");
+      throw new Exception("Error reading OpenAPI file.");
     }
 
     return openAPI;

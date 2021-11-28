@@ -25,4 +25,22 @@ public class OpenApi2PlantUmlProcessorTest {
 
   }
 
+  @Test
+  @DisplayName("Basic Petstore test full")
+  @Tag("integration-test")
+  public void basicTestFullPetstore() {
+
+    final TransactionContext context =
+        TransactionContext.build()
+            .withSpecFile("src/test/resources/openapi3/petstore/petstore_3.0.2.yaml")
+            .withOutput("src/test/resources/openapi3/petstore/")
+            .withGeneratDefinitionModelOnly(false)
+            .withIncludeCardinality(true)
+            .withGeneratSvg(false)
+            .withGeneratPng(false);
+
+    OpenApi2PlantUmlProcessor processor = new OpenApi2PlantUmlProcessor();
+    processor.process(context);
+
+  }
 }

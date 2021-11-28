@@ -24,10 +24,12 @@ interface "{{interfaceName}}" {
 "{{&sourceClass}}" {{#isExtension}}-->{{/isExtension}} {{#isComposition}}*--{{/isComposition}} {{#cardinality}}"{{cardinality}}"{{/cardinality}}  "{{&targetClass}}"
 {{/entityRelations}}
 
+{{#basicInfo}}
 note as N1
-  Name: <b><color:royalBlue>{{title}}</color>
-  Version: <b><color:royalBlue>{{version}}</color>
+  Name: <b><color:royalBlue>{{title}}</color></b>
+  Specification Version: <b><color:royalBlue>{{specificationVersion}}</color></b>
+  OpenAPI Version: <b><color:royalBlue>{{openApiVersion}}</color></b>
 end note
-
+{{/basicInfo}}
 
 @enduml
