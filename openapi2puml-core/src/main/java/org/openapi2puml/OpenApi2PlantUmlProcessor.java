@@ -3,6 +3,7 @@ package org.openapi2puml;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openapi2puml.model.ErrorEnum;
 import org.openapi2puml.model.TransactionContext;
 import org.openapi2puml.openapi.OpenApi3Reader;
 import org.openapi2puml.openapi.plantuml.MustacheUtility;
@@ -73,6 +74,9 @@ public class OpenApi2PlantUmlProcessor {
       }
     } else {
       LOGGER.error("ABORTING - Input validation failed.");
+      for ( ErrorEnum errorEnum: context.getValidationErrors() ) {
+        LOGGER.error("Error: " + errorEnum.getDescription());
+      }
     }
 
   }

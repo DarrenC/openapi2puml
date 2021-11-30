@@ -4,10 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.openapi2puml.model.ErrorEnum;
 import org.openapi2puml.model.TransactionContext;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,7 +28,10 @@ class InputValidatorTest {
   @Test
   @DisplayName("Should validate input spec file that exists")
   public void shouldValidateExistingFile() throws Exception {
-    Path tempFile = Files.createTempFile("TestSpec", "txt");
+    Path tempFile = Files.createTempFile("TestSpec", "yaml");
+
+    // Explicitly write the valid first line of an OpenAPI spec.
+    Files.write(tempFile, "openapi: 3.0".getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
     transactionContext.setSpecFile(tempFile.toString());
     assertTrue(InputValidator.validateInputs(transactionContext));
   }
@@ -34,7 +40,11 @@ class InputValidatorTest {
   @DisplayName("Should not validate input spec file that does not exist")
   public void shouldNotValidateNonExistentFile() {
     transactionContext.setSpecFile(NON_EXISTENT_FILE);
-    assertFalse(InputValidator.validateInputs(transactionContext));
+    assertAll("Should not validate and should have error for input spec",
+        () -> assertFalse(InputValidator.validateInputs(transactionContext)),
+        () -> assertFalse(transactionContext.getValidationErrors().isEmpty()),
+        () -> assertFalse(transactionContext.getValidationErrors().contains(ErrorEnum.INVALID_INPUT_SPEC_FILE))
+    );
   }
 
   @Test
@@ -44,4 +54,6 @@ class InputValidatorTest {
     transactionContext.setSpecFile(tempDirectory.toString());
     assertFalse(InputValidator.validateInputs(transactionContext));
   }
+
+  // TODO - tests for output path
 }

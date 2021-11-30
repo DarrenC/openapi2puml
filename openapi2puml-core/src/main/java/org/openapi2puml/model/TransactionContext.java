@@ -1,5 +1,8 @@
 package org.openapi2puml.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TransactionContext {
 
   private String specFile;
@@ -11,6 +14,8 @@ public class TransactionContext {
   private String title;
   private String openApiVersion;
   private String specificationVersion;
+
+  private List<ErrorEnum> validationErrors = new ArrayList<>();
 
   // TODO - make a proper builder and handle putting default values in here too
 
@@ -119,4 +124,13 @@ public class TransactionContext {
   public void setSpecificationVersion(String specificationVersion) {
     this.specificationVersion = specificationVersion;
   }
+
+  public List<ErrorEnum> getValidationErrors() {
+    return validationErrors;
+  }
+
+  public void setValidationErrors(List<ErrorEnum> validationErrors) {
+    this.validationErrors = validationErrors;
+  }
+
 }

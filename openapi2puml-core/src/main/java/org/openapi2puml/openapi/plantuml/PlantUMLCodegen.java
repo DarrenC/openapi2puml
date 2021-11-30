@@ -18,8 +18,6 @@ import java.util.TreeMap;
 
 public class PlantUMLCodegen {
 
-  public static final String TITLE = "title";
-  public static final String VERSION = "version";
   public static final String BASIC_INFO = "basicInfo";
   public static final String CLASS_DIAGRAMS = "classDiagrams";
   public static final String INTERFACE_DIAGRAMS = "interfaceDiagrams";

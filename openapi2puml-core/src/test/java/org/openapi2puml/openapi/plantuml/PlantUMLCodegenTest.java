@@ -24,10 +24,9 @@ public class PlantUMLCodegenTest {
     Map<String, Object> stringObjectMap = plantUMLCodegen.convertSwaggerToPlantUmlObjectModelMap(swagger);
 
     assertFalse(stringObjectMap.isEmpty(), "PlantUML object map should not be empty");
-    assertNotNull(stringObjectMap.get(plantUMLCodegen.TITLE), "Title should not be null");
-    assertNotNull(stringObjectMap.get(plantUMLCodegen.VERSION), "Version should not be null");
-    assertNotNull(stringObjectMap.get(plantUMLCodegen.CLASS_DIAGRAMS), "Class diagrams should not be null");
-    assertNotNull(stringObjectMap.get(plantUMLCodegen.INTERFACE_DIAGRAMS), "Interface Diagrams should not be null");
-    assertNotNull(stringObjectMap.get(plantUMLCodegen.ENTITY_RELATIONS), "Relations should not be null");
+    assertNotNull(stringObjectMap.get(PlantUMLCodegen.BASIC_INFO), "Basic Info should not be null");
+    assertNotNull(stringObjectMap.get(PlantUMLCodegen.CLASS_DIAGRAMS), "Class diagrams should not be null");
+    assertNotNull(stringObjectMap.get(PlantUMLCodegen.INTERFACE_DIAGRAMS), "Interface Diagrams should not be null");
+    assertNotNull(stringObjectMap.get(PlantUMLCodegen.ENTITY_RELATIONS), "Relations should not be null");
   }
 }
