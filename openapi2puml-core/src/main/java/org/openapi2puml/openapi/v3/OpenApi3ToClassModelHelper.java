@@ -1,6 +1,8 @@
 package org.openapi2puml.openapi.v3;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,11 +34,19 @@ public class OpenApi3ToClassModelHelper {
         boolean isClass = SCHEMA_TYPE_OBJECT.equalsIgnoreCase(schema.getType());
 
         List<ClassMembers> classMembers = new ArrayList<>();
-        if(isClass) {
-          schema.getProperties().forEach((key, propertySchema) -> {
-            // TODO - handle fields
-            if (key != null) {
+        if (schema.getProperties() != null) {
+          Map<String, Schema> properties = schema.getProperties();
+          properties.forEach((key, propertySchema) -> {
 
+            if (key != null) {
+              // TODO - find a better way of doing this
+              if (propertySchema instanceof ArraySchema || propertySchema instanceof ComposedSchema) {
+                LOGGER.warn("Warning, unhandled schema type for key: " + key);
+              } else {
+                //String dataType, String name, String className, String cardinality
+                String dataType = (propertySchema.getFormat() != null) ? propertySchema.getFormat() : propertySchema.getType();
+                classMembers.add(new ClassMembers(dataType, key, null, null));
+              }
             }
           });
         }
