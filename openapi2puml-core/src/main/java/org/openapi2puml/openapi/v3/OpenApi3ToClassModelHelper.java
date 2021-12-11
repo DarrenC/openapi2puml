@@ -16,7 +16,7 @@ public class OpenApi3ToClassModelHelper {
   public static List<ClassDiagram> getClassesFromOpenApi(OpenAPI openAPI) {
     List<ClassDiagram> classes = new ArrayList<>();
 
-    // TODO - stream ???
+    // TODO - stream
     for(Map.Entry schemaEntry : openAPI.getComponents().getSchemas().entrySet()){
       classes.add(new ClassDiagram(schemaEntry.getKey().toString(), null, null,
           null, true, null));

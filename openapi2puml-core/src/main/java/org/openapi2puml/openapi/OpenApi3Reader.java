@@ -9,7 +9,7 @@ import java.io.File;
 
 public class OpenApi3Reader {
 
-  private static final Logger LOGGER = LogManager.getLogger(org.openapi2puml.openapi.plantuml.OpenApi3Reader.class);
+  private static final Logger LOGGER = LogManager.getLogger(OpenApi3Reader.class);
 
   /**
    * Reads an OpenAPI specification from the given file path and returns an OpenAPI object

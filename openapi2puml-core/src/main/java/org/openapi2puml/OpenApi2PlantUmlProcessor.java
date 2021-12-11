@@ -77,6 +77,7 @@ public class OpenApi2PlantUmlProcessor {
       for ( ErrorEnum errorEnum: context.getValidationErrors() ) {
         LOGGER.error("Error: " + errorEnum.getDescription());
       }
+      // TODO - log usage
     }
 
   }

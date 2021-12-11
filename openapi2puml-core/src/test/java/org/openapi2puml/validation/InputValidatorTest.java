@@ -19,6 +19,7 @@ class InputValidatorTest {
   private TransactionContext transactionContext;
 
   private static final String NON_EXISTENT_FILE = "XYZ.txt";
+  private static final String NON_EXISTENT_DIR = "XYZ";
 
   @BeforeEach
   public void setup() {
@@ -27,12 +28,25 @@ class InputValidatorTest {
 
   @Test
   @DisplayName("Should validate input spec file that exists")
-  public void shouldValidateExistingFile() throws Exception {
+  public void shouldValidateExistingInputFile() throws Exception {
     Path tempFile = Files.createTempFile("TestSpec", "yaml");
-
     // Explicitly write the valid first line of an OpenAPI spec.
     Files.write(tempFile, "openapi: 3.0".getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
     transactionContext.setSpecFile(tempFile.toString());
+    assertTrue(InputValidator.validateInputs(transactionContext));
+  }
+
+  @Test
+  @DisplayName("Should validate input spec file that exists and output directory that exists")
+  public void shouldValidateExistingInputFileAndOutputDirectory() throws Exception {
+    Path tempFile = Files.createTempFile("TestSpec", "yaml");
+    // Explicitly write the valid first line of an OpenAPI spec.
+    Files.write(tempFile, "openapi: 3.0".getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+    transactionContext.setSpecFile(tempFile.toString());
+
+    Path tempDir = Files.createTempDirectory("TestDir");
+    transactionContext.setOutput(tempDir.toString());
+
     assertTrue(InputValidator.validateInputs(transactionContext));
   }
 
@@ -43,7 +57,23 @@ class InputValidatorTest {
     assertAll("Should not validate and should have error for input spec",
         () -> assertFalse(InputValidator.validateInputs(transactionContext)),
         () -> assertFalse(transactionContext.getValidationErrors().isEmpty()),
-        () -> assertFalse(transactionContext.getValidationErrors().contains(ErrorEnum.INVALID_INPUT_SPEC_FILE))
+        () -> assertTrue(transactionContext.getValidationErrors().contains(ErrorEnum.INVALID_INPUT_PATH))
+    );
+  }
+
+  @Test
+  @DisplayName("Should not validate input spec file that exists but has invalid schmea line")
+  public void shouldNotValidateExistingInputFileWithInvalidSchemaLine() throws Exception {
+    Path tempFile = Files.createTempFile("TestSpec", "yaml");
+
+    // Explicitly write the valid first line which is NOT an OpenAPI spec.
+    Files.write(tempFile, "dslfkjsdlfkj".getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+    transactionContext.setSpecFile(tempFile.toString());
+
+    assertAll("Should not validate and should have error for non OpenAPI input file",
+        () -> assertFalse(InputValidator.validateInputs(transactionContext)),
+        () -> assertFalse(transactionContext.getValidationErrors().isEmpty()),
+        () -> assertTrue(transactionContext.getValidationErrors().contains(ErrorEnum.INVALID_INPUT_SPEC_FILE))
     );
   }
 
@@ -52,8 +82,25 @@ class InputValidatorTest {
   public void shouldNotValidateDirectoryForInputSpecFile() throws Exception {
     Path tempDirectory = Files.createTempDirectory("TempDir");
     transactionContext.setSpecFile(tempDirectory.toString());
-    assertFalse(InputValidator.validateInputs(transactionContext));
+    assertAll("Should not validate and should have error for non OpenAPI input file",
+        () -> assertFalse(InputValidator.validateInputs(transactionContext)),
+        () -> assertFalse(transactionContext.getValidationErrors().isEmpty()),
+        () -> assertTrue(transactionContext.getValidationErrors().contains(ErrorEnum.INVALID_INPUT_PATH))
+    );
   }
 
-  // TODO - tests for output path
+  @Test
+  @DisplayName("Should not validate input spec file that does not exist and directory that does not exist")
+  public void shouldNotValidateNonExistentSpecFileAndOutputDirectory() {
+    transactionContext.setSpecFile(NON_EXISTENT_FILE);
+    transactionContext.setOutput(NON_EXISTENT_DIR);
+
+    assertAll("Should not validate and should have error for input spec and output dir",
+        () -> assertFalse(InputValidator.validateInputs(transactionContext)),
+        () -> assertFalse(transactionContext.getValidationErrors().isEmpty()),
+        () -> assertTrue(transactionContext.getValidationErrors().contains(ErrorEnum.INVALID_INPUT_PATH)),
+        () -> assertTrue(transactionContext.getValidationErrors().contains(ErrorEnum.INVALID_OUTPUT_PATH))
+    );
+  }
+
 }
