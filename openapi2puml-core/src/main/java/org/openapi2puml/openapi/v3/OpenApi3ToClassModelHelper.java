@@ -7,7 +7,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
-import org.openapi2puml.openapi.plantuml.vo.ClassMembers;
+import org.openapi2puml.openapi.plantuml.vo.ClassMember;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class OpenApi3ToClassModelHelper {
 
         boolean isClass = SCHEMA_TYPE_OBJECT.equalsIgnoreCase(schema.getType());
 
-        List<ClassMembers> classMembers = new ArrayList<>();
+        List<ClassMember> classMembers = new ArrayList<>();
         if (schema.getProperties() != null) {
           Map<String, Schema> properties = schema.getProperties();
           properties.forEach((key, propertySchema) -> {
@@ -45,7 +45,7 @@ public class OpenApi3ToClassModelHelper {
               } else {
                 //String dataType, String name, String className, String cardinality
                 String dataType = (propertySchema.getFormat() != null) ? propertySchema.getFormat() : propertySchema.getType();
-                classMembers.add(new ClassMembers(dataType, key, null, null));
+                classMembers.add(new ClassMember(dataType, key, null, null));
               }
             }
           });

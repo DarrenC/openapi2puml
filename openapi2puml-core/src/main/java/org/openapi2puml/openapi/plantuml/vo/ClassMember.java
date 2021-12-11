@@ -1,17 +1,17 @@
 package org.openapi2puml.openapi.plantuml.vo;
 
-public class ClassMembers {
+public class ClassMember {
 
   private String dataType;
   private String name;
   private String className;
   private String cardinality;
 
-  public ClassMembers() {
+  public ClassMember() {
     super();
   }
 
-  public ClassMembers(String dataType, String name, String className, String cardinality) {
+  public ClassMember(String dataType, String name, String className, String cardinality) {
     super();
     this.dataType = dataType;
     this.name = name;

@@ -7,11 +7,11 @@ public class ClassDiagram {
   private String className;
   private boolean isClass;
   private String description;
-  private List<ClassMembers> fields;
+  private List<ClassMember> fields;
   private List<ClassRelation> childClasses;
   private String superClass;
 
-  public ClassDiagram(String className, String description, List<ClassMembers> fields,
+  public ClassDiagram(String className, String description, List<ClassMember> fields,
                       List<ClassRelation> childClasses, boolean isClass, String superClass) {
     super();
     this.className = className;
@@ -38,11 +38,11 @@ public class ClassDiagram {
     this.description = description;
   }
 
-  public List<ClassMembers> getFields() {
+  public List<ClassMember> getFields() {
     return fields;
   }
 
-  public void setFields(List<ClassMembers> fields) {
+  public void setFields(List<ClassMember> fields) {
     this.fields = fields;
   }
 

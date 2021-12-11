@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openapi2puml.openapi.plantuml.FormatUtility;
 import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
-import org.openapi2puml.openapi.plantuml.vo.ClassMembers;
+import org.openapi2puml.openapi.plantuml.vo.ClassMember;
 import org.openapi2puml.openapi.plantuml.vo.ClassRelation;
 
 import java.util.*;
@@ -42,7 +42,7 @@ public class PlantUMLClassHelper {
       logger.debug("Processing Model: " + className);
 
       String superClass = getSuperClass(modelObject);
-      List<ClassMembers> classMembers = getClassMembers(modelObject, modelsMap);
+      List<ClassMember> classMembers = getClassMembers(modelObject, modelsMap);
 
       classDiagrams.add(new ClassDiagram(className, modelObject.getDescription(), classMembers,
           getChildClasses(classMembers, superClass), isModelClass(modelObject), superClass));
@@ -86,10 +86,10 @@ public class PlantUMLClassHelper {
     return superClass;
   }
 
-  private List<ClassRelation> getChildClasses(List<ClassMembers> classMembers, String superClass) {
+  private List<ClassRelation> getChildClasses(List<ClassMember> classMembers, String superClass) {
     List<ClassRelation> childClasses = new ArrayList<>();
 
-    for (ClassMembers member : classMembers) {
+    for (ClassMember member : classMembers) {
 
       boolean alreadyExists = false;
 
@@ -113,8 +113,8 @@ public class PlantUMLClassHelper {
     return childClasses;
   }
 
-  private List<ClassMembers> getClassMembers(Model modelObject, Map<String, Model> modelsMap) {
-    List<ClassMembers> classMembers = new ArrayList<>();
+  private List<ClassMember> getClassMembers(Model modelObject, Map<String, Model> modelsMap) {
+    List<ClassMember> classMembers = new ArrayList<>();
 
     if (modelObject instanceof ModelImpl) {
       classMembers = getClassMembers((ModelImpl) modelObject, modelsMap);
@@ -127,9 +127,9 @@ public class PlantUMLClassHelper {
     return classMembers;
   }
 
-  private List<ClassMembers> getClassMembers(ArrayModel arrayModel, Map<String, Model> modelsMap) {
+  private List<ClassMember> getClassMembers(ArrayModel arrayModel, Map<String, Model> modelsMap) {
 
-    List<ClassMembers> classMembers = new ArrayList<>();
+    List<ClassMember> classMembers = new ArrayList<>();
 
     Property propertyObject = arrayModel.getItems();
 
@@ -140,7 +140,7 @@ public class PlantUMLClassHelper {
     return classMembers;
   }
 
-  private List<ClassMembers> getClassMembers(ComposedModel composedModel, Map<String, Model> modelsMap) {
+  private List<ClassMember> getClassMembers(ComposedModel composedModel, Map<String, Model> modelsMap) {
     return getClassMembers(composedModel, modelsMap, new HashSet<>());
   }
 
@@ -151,15 +151,15 @@ public class PlantUMLClassHelper {
    * @param visited
    * @return
    */
-  private List<ClassMembers> getClassMembers(ComposedModel composedModel, Map<String, Model> modelsMap, Set<Model> visited) {
-    List<ClassMembers> classMembers = new ArrayList<>();
+  private List<ClassMember> getClassMembers(ComposedModel composedModel, Map<String, Model> modelsMap, Set<Model> visited) {
+    List<ClassMember> classMembers = new ArrayList<>();
     Map<String, Property> childProperties = new HashMap<>();
 
     if (null != composedModel.getChild()) {
       childProperties = composedModel.getChild().getProperties();
     }
 
-    List<ClassMembers> ancestorMembers;
+    List<ClassMember> ancestorMembers;
 
     List<Model> allOf = composedModel.getAllOf();
     for (Model currentModel : allOf) {
@@ -198,8 +198,8 @@ public class PlantUMLClassHelper {
     return classMembers;
   }
 
-  private List<ClassMembers> getClassMembers(ModelImpl model, Map<String, Model> modelsMap) {
-    List<ClassMembers> classMembers = new ArrayList<>();
+  private List<ClassMember> getClassMembers(ModelImpl model, Map<String, Model> modelsMap) {
+    List<ClassMember> classMembers = new ArrayList<>();
 
     Map<String, Property> modelMembers = model.getProperties();
     if (modelMembers != null && !modelMembers.isEmpty()) {
@@ -223,8 +223,8 @@ public class PlantUMLClassHelper {
     return classMembers;
   }
 
-  private ClassMembers getRefClassMembers(RefProperty refProperty) {
-    ClassMembers classMember = new ClassMembers();
+  private ClassMember getRefClassMembers(RefProperty refProperty) {
+    ClassMember classMember = new ClassMember();
     classMember.setClassName(refProperty.getSimpleRef());
     classMember.setName(" ");
 
@@ -235,13 +235,13 @@ public class PlantUMLClassHelper {
     return classMember;
   }
 
-  private List<ClassMembers> getEnum(List<String> enumValues) {
+  private List<ClassMember> getEnum(List<String> enumValues) {
 
-    List<ClassMembers> classMembers = new ArrayList<>();
+    List<ClassMember> classMembers = new ArrayList<>();
 
     if (enumValues != null && !enumValues.isEmpty()) {
       for (String enumValue : enumValues) {
-        ClassMembers classMember = new ClassMembers();
+        ClassMember classMember = new ClassMember();
         classMember.setName(enumValue);
         classMembers.add(classMember);
       }
@@ -250,15 +250,15 @@ public class PlantUMLClassHelper {
     return classMembers;
   }
 
-  private List<ClassMembers> convertModelPropertiesToClassMembers(Map<String, Property> modelMembers,
-                                                                  Model modelObject, Map<String, Model> models) {
+  private List<ClassMember> convertModelPropertiesToClassMembers(Map<String, Property> modelMembers,
+                                                                 Model modelObject, Map<String, Model> models) {
 
-    List<ClassMembers> classMembers = new ArrayList<>();
+    List<ClassMember> classMembers = new ArrayList<>();
 
     for (Map.Entry<String, Property> modelMapObject : modelMembers.entrySet()) {
       String variablName = modelMapObject.getKey();
 
-      ClassMembers classMemberObject = new ClassMembers();
+      ClassMember classMemberObject = new ClassMember();
       Property property = modelMembers.get(variablName);
 
       if (property instanceof ArrayProperty) {
@@ -266,6 +266,7 @@ public class PlantUMLClassHelper {
       } else if (property instanceof RefProperty) {
         classMemberObject = getClassMember((RefProperty) property, models, modelObject, variablName);
       } else {
+        // TODO - this duplicates getClassMember(StringProperty stringProperty, String variablName)
         classMemberObject.setDataType(
             getDataType(property.getFormat() != null ? property.getFormat() : property.getType(), false));
         classMemberObject.setName(variablName);
@@ -277,10 +278,10 @@ public class PlantUMLClassHelper {
     return classMembers;
   }
 
-  private ClassMembers getClassMember(ArrayProperty property, Model modelObject, Map<String, Model> models,
-                                      String variablName) {
+  private ClassMember getClassMember(ArrayProperty property, Model modelObject, Map<String, Model> models,
+                                     String variablName) {
 
-    ClassMembers classMemberObject = new ClassMembers();
+    ClassMember classMemberObject = new ClassMember();
     Property propObject = property.getItems();
 
     if (propObject instanceof RefProperty) {
@@ -292,19 +293,19 @@ public class PlantUMLClassHelper {
     return classMemberObject;
   }
 
-  private ClassMembers getClassMember(StringProperty stringProperty, String variablName) {
+  private ClassMember getClassMember(StringProperty stringProperty, String variablName) {
 
-    ClassMembers classMemberObject = new ClassMembers();
+    ClassMember classMemberObject = new ClassMember();
     classMemberObject.setDataType(getDataType(stringProperty.getType(), true));
     classMemberObject.setName(variablName);
 
     return classMemberObject;
   }
 
-  private ClassMembers getClassMember(RefProperty refProperty, Map<String, Model> models, Model modelObject,
-                                      String variableName) {
+  private ClassMember getClassMember(RefProperty refProperty, Map<String, Model> models, Model modelObject,
+                                     String variableName) {
 
-    ClassMembers classMemberObject = new ClassMembers();
+    ClassMember classMemberObject = new ClassMember();
     classMemberObject.setDataType(getDataType(refProperty.getSimpleRef(), true));
     classMemberObject.setName(variableName);
 
