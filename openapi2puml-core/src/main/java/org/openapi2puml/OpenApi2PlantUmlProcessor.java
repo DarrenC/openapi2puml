@@ -66,7 +66,7 @@ public class OpenApi2PlantUmlProcessor {
         // TODO - Produce the output(s) - plantuml file, (string version???), svg file
         MustacheUtility mustacheUtility = new MustacheUtility();
         // TODO - better file handling
-        mustacheUtility.createPlantUmlFile(new File(context.getOutput()), mustacheContextObject);
+        mustacheUtility.createPlantUmlFile(new File(context.getOutputFilePath()), mustacheContextObject);
 
       } catch (Exception e) {
         // TODO - handle all types of exceptions with proper information ....

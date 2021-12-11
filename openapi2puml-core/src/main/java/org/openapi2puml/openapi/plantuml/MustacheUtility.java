@@ -16,7 +16,7 @@ public class MustacheUtility {
   public String createPlantUmlFile(File targetLocation, Map<String, Object> additionalProperties)
       throws IOException, IllegalAccessException {
     String plantUmlFilePath = targetLocation.getAbsolutePath() +
-        ( targetLocation.isFile() ? "" : File.separator + "swagger.puml");
+        ( targetLocation.isDirectory() ? File.separator + "swagger.puml" : "");
 
     Writer writer = null;
     try {

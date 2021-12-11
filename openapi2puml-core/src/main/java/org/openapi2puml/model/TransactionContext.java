@@ -1,5 +1,12 @@
 package org.openapi2puml.model;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +69,17 @@ public class TransactionContext {
   }
 
   public String getOutput() {
+    return output;
+  }
+
+  public String getOutputFilePath() {
+    Path outputFilePath = Paths.get(this.output);
+
+    if(Files.isDirectory(outputFilePath)) {
+      // append open api spec file base name
+      return outputFilePath + File.separator + FilenameUtils.getBaseName(this.specFile) + ".puml";
+    }
+
     return output;
   }
 
@@ -133,4 +151,7 @@ public class TransactionContext {
     this.validationErrors = validationErrors;
   }
 
+  public void intialize() {
+
+  }
 }
