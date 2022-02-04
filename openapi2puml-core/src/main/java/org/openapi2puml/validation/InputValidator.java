@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO - refactor to Validate AND Initialize to set defaults, decide if this is OpenAPI 2 or 3 etc.
 public class InputValidator {
 
   public static boolean validateInputs(TransactionContext context) {

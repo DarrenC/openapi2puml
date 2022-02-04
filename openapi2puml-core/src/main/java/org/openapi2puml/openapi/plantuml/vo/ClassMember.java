@@ -6,12 +6,13 @@ public class ClassMember {
   private String name;
   private String className;
   private String cardinality;
+  private boolean isMultiple;
 
   public ClassMember() {
     super();
   }
 
-  public ClassMember(String dataType, String name, String className, String cardinality) {
+  public ClassMember(String dataType, String name, String className, String cardinality, boolean isMultiple) {
     super();
     this.dataType = dataType;
     this.name = name;
@@ -49,6 +50,14 @@ public class ClassMember {
 
   public void setCardinality(String cardinality) {
     this.cardinality = cardinality;
+  }
+
+  public boolean isMultiple() {
+    return isMultiple;
+  }
+
+  public void setMultiple(boolean multiple) {
+    isMultiple = multiple;
   }
 
   @Override

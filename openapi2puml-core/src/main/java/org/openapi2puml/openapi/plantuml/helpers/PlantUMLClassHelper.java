@@ -256,20 +256,20 @@ public class PlantUMLClassHelper {
     List<ClassMember> classMembers = new ArrayList<>();
 
     for (Map.Entry<String, Property> modelMapObject : modelMembers.entrySet()) {
-      String variablName = modelMapObject.getKey();
+      String variableName = modelMapObject.getKey();
 
       ClassMember classMemberObject = new ClassMember();
-      Property property = modelMembers.get(variablName);
+      Property property = modelMembers.get(variableName);
 
       if (property instanceof ArrayProperty) {
-        classMemberObject = getClassMember((ArrayProperty) property, modelObject, models, variablName);
+        classMemberObject = getClassMember((ArrayProperty) property, modelObject, models, variableName, true);
       } else if (property instanceof RefProperty) {
-        classMemberObject = getClassMember((RefProperty) property, models, modelObject, variablName);
+        classMemberObject = getClassMember((RefProperty) property, models, modelObject, variableName, false);
       } else {
-        // TODO - this duplicates getClassMember(StringProperty stringProperty, String variablName)
+        // TODO - this duplicates getClassMember(StringProperty stringProperty, String variableName)
         classMemberObject.setDataType(
             getDataType(property.getFormat() != null ? property.getFormat() : property.getType(), false));
-        classMemberObject.setName(variablName);
+        classMemberObject.setName(variableName);
       }
 
       classMembers.add(classMemberObject);
@@ -279,34 +279,25 @@ public class PlantUMLClassHelper {
   }
 
   private ClassMember getClassMember(ArrayProperty property, Model modelObject, Map<String, Model> models,
-                                     String variablName) {
+                                     String variableName, boolean isMultiple) {
 
     ClassMember classMemberObject = new ClassMember();
     Property propObject = property.getItems();
 
     if (propObject instanceof RefProperty) {
-      classMemberObject = getClassMember((RefProperty) propObject, models, modelObject, variablName);
+      classMemberObject = getClassMember((RefProperty) propObject, models, modelObject, variableName, isMultiple);
     } else if (propObject instanceof StringProperty) {
-      classMemberObject = getClassMember((StringProperty) propObject, variablName);
+      classMemberObject = getClassMember((StringProperty) propObject, variableName, isMultiple);
     }
 
     return classMemberObject;
   }
 
-  private ClassMember getClassMember(StringProperty stringProperty, String variablName) {
-
-    ClassMember classMemberObject = new ClassMember();
-    classMemberObject.setDataType(getDataType(stringProperty.getType(), true));
-    classMemberObject.setName(variablName);
-
-    return classMemberObject;
-  }
-
   private ClassMember getClassMember(RefProperty refProperty, Map<String, Model> models, Model modelObject,
-                                     String variableName) {
+                                     String variableName, boolean isMultiple) {
 
     ClassMember classMemberObject = new ClassMember();
-    classMemberObject.setDataType(getDataType(refProperty.getSimpleRef(), true));
+    classMemberObject.setDataType(getDataType(refProperty.getSimpleRef(), isMultiple));
     classMemberObject.setName(variableName);
 
     if (models.containsKey(refProperty.getSimpleRef())) {
@@ -320,6 +311,15 @@ public class PlantUMLClassHelper {
         classMemberObject.setCardinality(CARDINALITY_NONE_TO_MANY);
       }
     }
+
+    return classMemberObject;
+  }
+
+  private ClassMember getClassMember(StringProperty stringProperty, String variableName, boolean isMultiple) {
+
+    ClassMember classMemberObject = new ClassMember();
+    classMemberObject.setDataType(getDataType(stringProperty.getType(), isMultiple));
+    classMemberObject.setName(variableName);
 
     return classMemberObject;
   }

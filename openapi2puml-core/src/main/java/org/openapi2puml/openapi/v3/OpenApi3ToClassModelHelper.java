@@ -42,10 +42,16 @@ public class OpenApi3ToClassModelHelper {
               // TODO - find a better way of doing this
               if (propertySchema instanceof ArraySchema || propertySchema instanceof ComposedSchema) {
                 LOGGER.warn("Warning, unhandled schema type for key: " + key);
+              } else if (propertySchema.get$ref() != null) {
+                classMembers.add(new ClassMember(
+                    propertySchema.get$ref().substring(propertySchema.get$ref().lastIndexOf("/")+1),
+                    key,
+                    null,
+                    null, false));
               } else {
-                //String dataType, String name, String className, String cardinality
+                // Default case - basic data type with a datatype/format and a name
                 String dataType = (propertySchema.getFormat() != null) ? propertySchema.getFormat() : propertySchema.getType();
-                classMembers.add(new ClassMember(dataType, key, null, null));
+                classMembers.add(new ClassMember(dataType, key, null, null, false));
               }
             }
           });
