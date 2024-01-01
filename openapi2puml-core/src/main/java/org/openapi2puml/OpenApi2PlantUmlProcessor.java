@@ -9,8 +9,10 @@ import org.openapi2puml.openapi.OpenApi3Reader;
 import org.openapi2puml.openapi.plantuml.MustacheUtility;
 import org.openapi2puml.openapi.plantuml.vo.BasicInfo;
 import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
+import org.openapi2puml.openapi.plantuml.vo.InterfaceDiagram;
 import org.openapi2puml.openapi.v3.OpenApi3ToBasicInfoModelHelper;
 import org.openapi2puml.openapi.v3.OpenApi3ToClassModelHelper;
+import org.openapi2puml.openapi.v3.OpenApi3ToInterfaceModelHelper;
 import org.openapi2puml.validation.InputValidator;
 
 import java.io.File;
@@ -50,6 +52,7 @@ public class OpenApi2PlantUmlProcessor {
         // TODO - Call the Model Builders - Basic Info, Class, Interface, Relationship
         BasicInfo basicInfoFromOpenApi = OpenApi3ToBasicInfoModelHelper.getBasicInfoFromOpenApi(openAPI);
         List<ClassDiagram> classesFromOpenApi = OpenApi3ToClassModelHelper.getClassesFromOpenApi(openAPI);
+        List<InterfaceDiagram> interfacesFromOpenApi = OpenApi3ToInterfaceModelHelper.getInterfacesFromOpenApi(openAPI);
 
         // TODO - Call the Context builder to add the model into the mustache template context map
         Map<String, Object> mustacheContextObject = new TreeMap<>();
@@ -61,6 +64,7 @@ public class OpenApi2PlantUmlProcessor {
 
         mustacheContextObject.put(BASIC_INFO, basicInfoFromOpenApi);
         mustacheContextObject.put(CLASS_DIAGRAMS, classesFromOpenApi);
+        mustacheContextObject.put(INTERFACE_DIAGRAMS, interfacesFromOpenApi);
 
         // TODO - Call the mustache template handler to build the PlantUML diagram
         // TODO - Produce the output(s) - plantuml file, (string version???), svg file
